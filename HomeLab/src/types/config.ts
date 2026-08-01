@@ -1,9 +1,16 @@
+export interface UptimeKumaConfig {
+  slug?: string;
+  monitorId?: number;
+  apiUrl?: string;
+}
+
 export interface ServiceItem {
   name: string;
   url: string;
   icon?: string;
   description?: string;
-  type?: 'link' | 'uptime-kuma';
+  type?: 'link' | 'ping';
+  uptimeKuma?: UptimeKumaConfig;
 }
 
 export interface Section {
@@ -14,5 +21,6 @@ export interface Section {
 export interface DashboardConfig {
   title: string;
   subtitle?: string;
+  uptimeKumaBaseUrl?: string;
   sections: Section[];
 }

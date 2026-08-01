@@ -1,27 +1,30 @@
 title: "HomeLab Dashboard"
 subtitle: "Zentrale Steuerung aller Dienste"
+uptimeKumaBaseUrl: "/api/kuma"
+
 sections:
   - name: "Infrastruktur & Netze"
     items:
       - name: "Router / Gateway"
-        url: "http://192.168.1.1"
+        url: "http://192.168.178.1/"
         icon: "Router"
         description: "Fritz!Box / Network Gateway"
-      - name: "Pi-hole"
-        url: "http://pi.hole/admin"
-        icon: "ShieldCheck"
-        description: "DNS Sinkhole & AdBlocker"
+        type: "ping"
 
   - name: "Monitoring & Server"
     items:
       - name: "Uptime Kuma"
-        url: "http://uptime.local:3001"
+        url: "http://localhost:3001"
         icon: "Activity"
         description: "Status & Uptime Monitor"
+        uptimeKuma:
+          slug: "default"
+          monitorId: 1
 
-  - name: "Medien & Unterhaltung"
-    items:
-      - name: "Plex Media Server"
-        url: "http://plex.local:32400"
-        icon: "Film"
-        description: "Filme, Serien & Musik"
+      - name: "Google Search"
+        url: "https://www.google.com"
+        icon: "Search"
+        description: "Suchmaschine Test"
+        uptimeKuma:
+          slug: "default"
+          monitorId: 3

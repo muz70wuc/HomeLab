@@ -1,0 +1,21 @@
+services:
+  # 1. Dein React Dashboard
+  homelab-dashboard:
+    build: .
+    container_name: homelab-dashboard
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+  # 2. Uptime Kuma
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    volumes:
+      - uptime-kuma-data:/app/data
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+
+volumes:
+  uptime-kuma-data:

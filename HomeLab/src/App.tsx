@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import * as yaml from 'js-yaml';
 import type { DashboardConfig } from './types/config';
 import { DynamicIcon } from './components/DynamicIcon';
+import { UptimeBadge } from './components/UptimeBadge';
 import { ExternalLink, RefreshCw } from 'lucide-react';
 
 export default function App() {
@@ -100,9 +101,18 @@ export default function App() {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <h3 className="font-semibold text-slate-200 group-hover:text-white transition-colors truncate text-sm">
-                          {item.name}
-                        </h3>
+                        <div className="flex items-center gap-2 truncate">
+                          <h3 className="font-semibold text-slate-200 group-hover:text-white transition-colors truncate text-sm">
+                            {item.name}
+                          </h3>
+                          <UptimeBadge
+                            baseUrl={item.uptimeKuma?.apiUrl || config?.uptimeKumaBaseUrl}
+                            slug={item.uptimeKuma?.slug}
+                            monitorId={item.uptimeKuma?.monitorId}
+                            type={item.type}
+                            targetUrl={item.url}
+                          />
+                        </div>
                         <ExternalLink className="w-3.5 h-3.5 text-slate-600 group-hover:text-indigo-400 transition-colors shrink-0" />
                       </div>
 
