@@ -48,7 +48,7 @@ export function UptimeBadge({
     const controller = new AbortController();
 
     const fetchStatus = () => {
-      fetch(`${baseUrl}/api/status-page/${slug}/heartbeat`, { signal: controller.signal })
+      fetch(`${baseUrl}/api/status-page/heartbeat/${slug}`, { signal: controller.signal })
         .then((res) => {
           if (!res.ok) throw new Error('API Error');
           return res.json();

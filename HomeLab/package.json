@@ -6,15 +6,20 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "sync-kuma": "node scripts/sync-kuma.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "chokidar": "^5.0.0",
+    "dotenv": "^17.4.2",
     "js-yaml": "^5.2.2",
     "lucide-react": "^1.28.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "socket.io-client": "^4.8.3",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

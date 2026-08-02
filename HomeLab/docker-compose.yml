@@ -17,5 +17,22 @@ services:
       - "3001:3001"
     restart: unless-stopped
 
+  # 3. Kuma Auto-Sync
+  kuma-sync:
+    build:
+      context: .
+      dockerfile: Dockerfile.sync
+    container_name: kuma-sync
+    restart: unless-stopped
+    environment:
+      # Greift intern im Docker-Netzwerk auf Uptime Kuma zu
+      - KUMA_URL=http://uptime-kuma:3001
+    volumes:
+      # WICHTIG: Volume-Mount, damit das Skript die config.yaml lesen 
+      # und die neu generierten IDs direkt wieder in deine Datei reinschreiben kann!
+      - ./public/config.yaml:/app/public/config.yaml
+    depends_on:
+      - uptime-kuma
+
 volumes:
   uptime-kuma-data:

@@ -1,30 +1,37 @@
-title: "HomeLab Dashboard"
-subtitle: "Zentrale Steuerung aller Dienste"
-uptimeKumaBaseUrl: "/api/kuma"
-
+title: HomeLab Dashboard
+subtitle: Zentrale Steuerung aller Dienste
+uptimeKumaBaseUrl: /api/kuma
 sections:
-  - name: "Infrastruktur & Netze"
+  - name: Infrastruktur & Netze
     items:
-      - name: "Router / Gateway"
-        url: "http://192.168.178.1/"
-        icon: "Router"
-        description: "Fritz!Box / Network Gateway"
-        type: "ping"
-
-  - name: "Monitoring & Server"
+      - name: Router / Gateway
+        url: http://192.168.178.1/
+        icon: Router
+        description: Fritz!Box / Network Gateway
+        type: ping
+        uptimeKuma: false
+  - name: Server & Dienste
     items:
-      - name: "Uptime Kuma"
-        url: "http://localhost:3001"
-        icon: "Activity"
-        description: "Status & Uptime Monitor"
+      - name: HomeLab Server
+        url: http://localhost:5173/
+        icon: Server
+        description: HomeLab Dashboard
         uptimeKuma:
-          slug: "default"
-          monitorId: 1
-
-      - name: "Google Search"
-        url: "https://www.google.com"
-        icon: "Search"
-        description: "Suchmaschine Test"
+          slug: localhost
+          monitorId: 10
+      - name: Uptime Kuma
+        url: http://localhost:3001/
+        icon: Kuma
+        description: Uptime Kuma Dashboard
         uptimeKuma:
-          slug: "default"
-          monitorId: 3
+          slug: localhost
+          monitorId: 6
+  - name: Video & Multimedia
+    items:
+      - name: YouTube
+        url: https://www.youtube.com/
+        icon: Youtube
+        description: Video Streaming Service
+        uptimeKuma:
+          slug: localhost
+          monitorId: 7

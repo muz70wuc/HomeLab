@@ -9,6 +9,8 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
+    host: true,
+    allowedHosts: true, // <-- Ermöglicht Anfragen über host.docker.internal
     proxy: {
       '/api/kuma': {
         target: 'http://localhost:3001',
