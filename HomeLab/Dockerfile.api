@@ -1,0 +1,17 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Kopiert package.json und package-lock.json aus dem Hauptverzeichnis
+COPY package*.json ./
+
+# Installiert die Produktions-Dependencies sauber über npm ci
+RUN npm ci --only=production
+
+# Kopiert das API-Skript aus dem scripts-Ordner
+COPY scripts/server.js ./scripts/server.js
+
+EXPOSE 3000
+
+# Startet das Skript aus dem scripts-Ordner
+CMD ["node", "scripts/server.js"]

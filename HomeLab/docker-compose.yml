@@ -1,13 +1,45 @@
 services:
-  # 1. Dein React Dashboard
+  # 1. Vite frontend development container
   homelab-dashboard:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     container_name: homelab-dashboard
     ports:
-      - "8080:80"
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_URL=http://dashboard-api:3000
+      - VITE_KUMA_URL=http://uptime-kuma:3001
+    volumes:
+      - ./src:/app/src:cached
+      - ./public:/app/public:cached
+      - ./package.json:/app/package.json:ro
+      - ./package-lock.json:/app/package-lock.json:ro
+      - ./vite.config.ts:/app/vite.config.ts:ro
+      - ./tsconfig.json:/app/tsconfig.json:ro
+      - ./tsconfig.app.json:/app/tsconfig.app.json:ro
+      - ./tsconfig.node.json:/app/tsconfig.node.json:ro
+      - ./index.html:/app/index.html:ro
+      - ./eslint.config.js:/app/eslint.config.js:ro
+    restart: unless-stopped
+    depends_on:
+      - dashboard-api
+
+  # 2. Express Backend (Speichert UI-Eingaben in die config.yaml)
+  dashboard-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: dashboard-api
+    command: ["node", "--watch", "scripts/server.js"]
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./public/config.yaml:/app/public/config.yaml:rw
+      - ./scripts:/app/scripts:cached
     restart: unless-stopped
 
-  # 2. Uptime Kuma
+  # 3. Uptime Kuma
   uptime-kuma:
     image: louislam/uptime-kuma:1
     container_name: uptime-kuma
@@ -17,7 +49,7 @@ services:
       - "3001:3001"
     restart: unless-stopped
 
-  # 3. Kuma Auto-Sync
+  # 4. Kuma Auto-Sync (Liest & Aktualisiert config.yaml)
   kuma-sync:
     build:
       context: .
@@ -25,14 +57,14 @@ services:
     container_name: kuma-sync
     restart: unless-stopped
     environment:
-      # Greift intern im Docker-Netzwerk auf Uptime Kuma zu
       - KUMA_URL=http://uptime-kuma:3001
     volumes:
-      # WICHTIG: Volume-Mount, damit das Skript die config.yaml lesen 
-      # und die neu generierten IDs direkt wieder in deine Datei reinschreiben kann!
-      - ./public/config.yaml:/app/public/config.yaml
+      - ./public/config.yaml:/app/public/config.yaml:rw
+      - ./scripts:/app/scripts:ro
+      - ./entry.env:/app/entry.env:ro
     depends_on:
       - uptime-kuma
 
 volumes:
   uptime-kuma-data:
+    name: homelab_uptime-kuma-data

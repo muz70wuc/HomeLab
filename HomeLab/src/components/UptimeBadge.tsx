@@ -47,29 +47,33 @@ export function UptimeBadge({
 
     const controller = new AbortController();
 
-    const fetchStatus = () => {
-      fetch(`${baseUrl}/api/status-page/heartbeat/${slug}`, { signal: controller.signal })
-        .then((res) => {
-          if (!res.ok) throw new Error('API Error');
-          return res.json();
-        })
-        .then((json) => {
-          const heartbeats = json.heartbeatList?.[monitorId];
-          if (heartbeats && heartbeats.length > 0) {
-            const last = heartbeats[heartbeats.length - 1];
-            setData({ status: last.status, ping: last.ping });
-            setError(false);
-          } else {
-            setError(true);
-          }
-        })
-        .catch((err) => {
-          if (err.name !== 'AbortError') {
-            setError(true);
-          }
-        })
-        .finally(() => setLoading(false));
-    };
+  const fetchStatus = () => {
+    // baseUrl ist '/api/kuma' -> Ziel: /api/kuma/api/status-page/heartbeat/localhost
+    const cleanBaseUrl = baseUrl?.replace(/\/$/, '') || '';
+    const url = `${cleanBaseUrl}/api/status-page/heartbeat/${slug}`;
+
+    fetch(url, { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error(`API Error ${res.status}`);
+        return res.json();
+      })
+      .then((json) => {
+        const heartbeats = json.heartbeatList?.[monitorId];
+        if (heartbeats && heartbeats.length > 0) {
+          const last = heartbeats[heartbeats.length - 1];
+          setData({ status: last.status, ping: last.ping });
+          setError(false);
+        } else {
+          setError(true);
+        }
+      })
+      .catch((err) => {
+        if (err.name !== 'AbortError') {
+          setError(true);
+        }
+      })
+      .finally(() => setLoading(false));
+  };
 
     fetchStatus();
     const interval = setInterval(fetchStatus, 30000);

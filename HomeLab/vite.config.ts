@@ -10,12 +10,17 @@ export default defineConfig({
   ],
   server: {
     host: true,
-    allowedHosts: true, // <-- Ermöglicht Anfragen über host.docker.internal
+    allowedHosts: true, // Ermöglicht Anfragen über host.docker.internal
     proxy: {
       '/api/kuma': {
-        target: 'http://localhost:3001',
+        target: process.env.VITE_KUMA_URL || 'http://localhost:3001',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/kuma/, ''),
+      },
+      // Backend-Endpunkt zum Speichern der YAML-Datei
+      '/api/config': {
+        target: process.env.VITE_BACKEND_URL || 'http://dashboard-api:3000',
+        changeOrigin: true,
       },
     },
   },

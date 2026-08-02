@@ -7,7 +7,7 @@ import chokidar from 'chokidar';
 
 dotenv.config({ path: 'entry.env', override: false });
 
-const KUMA_URL = process.env.KUMA_URL || 'http://localhost:3001';
+const KUMA_URL = process.env.KUMA_URL || 'http://uptime-kuma:3001';
 const USERNAME = process.env.KUMA_USERNAME;
 const PASSWORD = process.env.KUMA_PASSWORD;
 

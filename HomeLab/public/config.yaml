@@ -12,13 +12,6 @@ sections:
         uptimeKuma: false
   - name: Server & Dienste
     items:
-      - name: HomeLab Server
-        url: http://localhost:5173/
-        icon: Server
-        description: HomeLab Dashboard
-        uptimeKuma:
-          slug: localhost
-          monitorId: 10
       - name: Uptime Kuma
         url: http://localhost:3001/
         icon: Kuma
