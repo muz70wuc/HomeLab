@@ -147,4 +147,8 @@ This app does not currently include PWA configuration. To make it installable in
 
 ## License
 
-This repository does not include a license file. Add one if you want to publish or share it publicly.
+This project is licensed under the HomeLab Private Use License. It may be used for personal, non-commercial purposes only.
+
+Commercial use, resale, or any money-making use of this project or derived products is not permitted without explicit written permission from the copyright holder.
+
+See `LICENSE` for full terms.
