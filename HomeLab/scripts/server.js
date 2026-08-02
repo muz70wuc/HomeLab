@@ -10,6 +10,16 @@ const CONFIG_PATH = path.resolve(process.cwd(), 'public/config.yaml');
 
 app.use(express.json());
 
+app.get('/api/config', (req, res) => {
+  try {
+    const yamlString = fs.readFileSync(CONFIG_PATH, 'utf8');
+    res.type('text/yaml').send(yamlString);
+  } catch (error) {
+    console.error('❌ Fehler beim Lesen der config.yaml:', error);
+    res.status(500).json({ error: 'Fehler beim Laden der Konfiguration' });
+  }
+});
+
 app.post('/api/config', (req, res) => {
   try {
     const updatedConfig = req.body;
