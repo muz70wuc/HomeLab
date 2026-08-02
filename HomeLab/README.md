@@ -1,75 +1,150 @@
-# React + TypeScript + Vite
+# HomeLab Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A small React + TypeScript + Vite dashboard for managing local home lab services.
 
-Currently, two official plugins are available:
+It is designed to run through Docker Compose with a Vite frontend, an Express backend that saves the dashboard configuration, and optional Uptime Kuma integration.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## What this project does
 
-## React Compiler
+- Loads a dashboard configuration from `public/config.yaml` through the backend API
+- Renders service categories and service cards in a responsive React UI
+- Lets you add categories and services from the UI
+- Saves changes back to `public/config.yaml` via `POST /api/config`
+- Supports optional Uptime Kuma monitoring and service ping checks
+- Uses Docker Compose for development and local runtime
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## What it uses
 
-## Expanding the ESLint configuration
+- `React 19` + `TypeScript`
+- `Vite` for development server, proxying, and build
+- `Tailwind CSS` via `@tailwindcss/vite`
+- `Express` backend for config persistence
+- `js-yaml` / `yaml` to parse and serialize YAML config
+- `lucide-react` for icons
+- `Docker Compose` to run the frontend, backend, Uptime Kuma, and sync service together
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Project structure
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- `src/` - React app sources
+- `src/App.tsx` - Dashboard UI and config handling
+- `src/components/` - shared UI components like `DynamicIcon` and `UptimeBadge`
+- `src/types/config.ts` - TypeScript config definitions
+- `public/config.yaml` - dashboard configuration file read by the backend
+- `scripts/server.js` - Express backend API that reads/writes `config.yaml`
+- `scripts/sync-kuma.js` - optional script to synchronize Uptime Kuma data
+- `docker-compose.yml` - local environment for the frontend, API, Uptime Kuma, and sync container
+- `Dockerfile.dev` - frontend development container definition
+- `Dockerfile.api` - backend API container definition
+- `Dockerfile.sync` - sync container definition for Uptime Kuma
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Running locally with Docker
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Start the full stack
 
+```bash
+cd HomeLab
+docker compose up -d --build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Open the app
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:3000`
+- Uptime Kuma: `http://localhost:3001`
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Stop the stack
 
+```bash
+docker compose down
 ```
+
+## Development without Docker
+
+### Install dependencies
+
+```bash
+cd HomeLab
+npm install
+```
+
+### Start the Vite app
+
+```bash
+npm run dev
+```
+
+The frontend will run on `http://localhost:5173` and proxy API requests to the backend through Vite.
+
+### Start the backend API
+
+```bash
+node scripts/server.js
+```
+
+The backend listens on port `3000` by default and exposes:
+
+- `GET /api/config` - returns the current YAML config
+- `POST /api/config` - saves dashboard updates to `public/config.yaml`
+
+## Build for production
+
+```bash
+npm run build
+```
+
+The output is generated into `dist/`.
+
+## How the dashboard works
+
+1. The frontend fetches `GET /api/config` from the backend.
+2. The YAML config is parsed into React state.
+3. Sections and service cards are rendered from that config.
+4. When the user adds or updates a service, the app sends the updated config to `POST /api/config`.
+5. The backend writes the updated YAML back to `public/config.yaml`.
+
+## Mobile / app creation
+
+This project is a web application.
+
+### Android / iOS
+
+To turn this into a mobile app, use a wrapper such as:
+
+- [Capacitor](https://capacitorjs.com/)
+- [Cordova](https://cordova.apache.org/)
+- [Tauri](https://tauri.app/)
+
+A common workflow is:
+
+1. Build the web app with `npm run build`
+2. Serve the built `dist/` files from a local or remote server
+3. Wrap the web app using Capacitor or Cordova
+4. Run native build commands for Android/iOS
+
+### Progressive Web App (PWA)
+
+This app does not currently include PWA configuration. To make it installable in a mobile browser, add:
+
+- a web manifest
+- service worker support
+- HTTPS hosting for production
+
+## How to use it
+
+1. Open the dashboard in the browser.
+2. Add a new category with `Kategorie`.
+3. Add services inside a category using `Dienst hinzufügen`.
+4. Provide a name, URL, icon name, optional description, and service type.
+5. Enable Uptime Kuma monitoring if you want status tracking.
+6. Save changes and refresh if needed.
+
+## Notes
+
+- The frontend is served by Vite in development.
+- The backend stores the dashboard config in `public/config.yaml`.
+- In Docker, the frontend uses `VITE_BACKEND_URL=http://dashboard-api:3000` and `VITE_KUMA_URL=http://uptime-kuma:3001`.
+- `uptime-kuma` is only available inside Docker on the service network; use `http://localhost:3001` from the host browser.
+
+## License
+
+This repository does not include a license file. Add one if you want to publish or share it publicly.
